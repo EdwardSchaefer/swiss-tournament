@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# 
+#
 # tournament.py -- implementation of a Swiss-system tournament
 #
 
@@ -9,18 +9,16 @@ def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
     return psycopg2.connect("dbname=tournament")
 
+
 def deleteMatches():
     """Remove all the match records from the database."""
     conn = connect()
     cursor = conn.cursor()
     cursor.execute(
         "DELETE FROM matches;")
-    cursor.execute(
-        "UPDATE players SET wins = 0")
-    cursor.execute(
-        "UPDATE players SET losses = 0")
     conn.commit()
     conn.close()
+
 
 def deletePlayers():
     """Remove all the player records from the database."""
@@ -30,6 +28,7 @@ def deletePlayers():
         "DELETE FROM players;")
     conn.commit()
     conn.close()
+
 
 def countPlayers():
     """Returns the number of players currently registered."""
@@ -42,12 +41,13 @@ def countPlayers():
     conn.close()
     return result
 
+
 def registerPlayer(name):
     """Adds a player to the tournament database.
-  
+
     The database assigns a unique serial id number for the player.  (This
     should be handled by your SQL database schema, not in your Python code.)
-  
+
     Args:
       name: the player's full name (need not be unique).
     """
@@ -55,15 +55,16 @@ def registerPlayer(name):
     conn = connect()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO players (name, wins, losses) values(%s, 0, 0)", (name,))
+        "INSERT INTO players (name) values(%s)", (name,))
     conn.commit()
     conn.close()
+
 
 def playerStandings():
     """Returns a list of the players and their win records, sorted by wins.
 
-    The first entry in the list should be the player in first place, or a player
-    tied for first place if there is currently a tie.
+    The first entry in the list should be the player in first place,
+    or a player tied for first place if there is currently a tie.
 
     Returns:
       A list of tuples, each of which contains (id, name, wins, matches):
@@ -76,11 +77,12 @@ def playerStandings():
     conn = connect()
     cursor = conn.cursor()
     cursor.execute(
-        "SELECT playerID, name, wins, wins + losses as matches FROM players ORDER BY wins;")
+        "SELECT * from standings;")
     result = cursor.fetchall()
     conn.commit()
     conn.close()
     return result
+
 
 def reportMatch(winner, loser):
     """Records the outcome of a single match between two players.
@@ -92,13 +94,11 @@ def reportMatch(winner, loser):
     conn = connect()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO matches (winnerID, loserID) VALUES (%s, %s);", (winner, loser,))
-    cursor.execute(
-        "UPDATE players SET wins = wins + 1 WHERE playerID = (%s);", (winner,))
-    cursor.execute(
-        "UPDATE players SET losses = losses + 1 WHERE playerID = (%s);", (loser,))
+        "INSERT INTO matches (winnerID, loserID) "
+        "VALUES (%s, %s);", (winner, loser,))
     conn.commit()
     conn.close()
+
 
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
@@ -118,10 +118,16 @@ def swissPairings():
     conn = connect()
     cursor = conn.cursor()
     cursor.execute(
-        "SELECT COUNT (*) FROM players;")
+        "SELECT COUNT (playerID) FROM standings;")
+    """variable pCount is the number of players from the Count minus one
+    because python list indexes start on the 0th order, not the 1st.
+    Subtracting one accommodates for what is sometimes referred to as the
+    off-by-one error""" 
     pCount = cursor.fetchone()[0] - 1
     cursor.execute(
-        "SELECT playerID, name FROM players ORDER BY wins;")
+        "SELECT playerID, name "
+        "FROM standings "
+        "ORDER BY winCount;")
     ranked = cursor.fetchall()
     paired = []
     while pCount >= 0:

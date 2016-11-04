@@ -6,6 +6,31 @@ interface. The repository includes a set of functions which checks the
 validity of the tournament functions. The program was developed and tested
 using a virtual machine with Vagrant.
 
+
+
+#11/4/16 Update
+----------------
+
+	*Added instructions for setting up the database and run the test module
+	*Numerous minor formatting changes to tournament.py
+	*Changed tournament.sql to clear previous instances of databases
+	*Changed tournament.sql to connect to tournament database
+	*Changed tournament.sql and tournament.py to eliminate redundant data
+	*Changed tournament.sql to include foreign keys for data integrity
+	*Added 'standings' view to tournament.sql 
+
+#Setting up the database and running the test module
+----------------------------------------------------
+
+tournament.sql defines the database schema and tournament_test.py
+runs the tests against tournament.py. First use psql on the command
+line with the -f option with tournament.sql as the file. Then run
+Python from the command line with tournament_test.py as the file.
+It should look like the commands below:
+
+>$ psql -f tournament.sql
+>$ python tournament_test.py
+
 #List of files
 --------------
 
