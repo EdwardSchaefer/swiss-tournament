@@ -6,7 +6,9 @@ interface. The repository includes a set of functions which checks the
 validity of the tournament functions. The program was developed and tested
 using a virtual machine with Vagrant.
 
-
+#7/7/17 Update
+--------------
+	*Add more documentation on how to use application 
 
 #11/4/16 Update
 ----------------
@@ -22,14 +24,23 @@ using a virtual machine with Vagrant.
 #Setting up the database and running the test module
 ----------------------------------------------------
 
-tournament.sql defines the database schema and tournament_test.py
-runs the tests against tournament.py. First use psql on the command
-line with the -f option with tournament.sql as the file. Then run
-Python from the command line with tournament_test.py as the file.
-It should look like the commands below:
+1. Install [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/wiki/VirtualBox)
 
->$ psql -f tournament.sql
->$ python tournament_test.py
+2. Start the VirtualBox application 
+
+3. From the command line, clone the [fullstack-nanodegree-vm](https://github.com/udacity/fullstack-nanodegree-vm)
+
+4. Clone this repository to the vagrant VM directory
+
+5. Launch the Vagrant VM with the command 'vagrant up'
+
+6. Log into the Vagrant VM with the command 'vagrant ssh'
+
+7. Navigate to the project's directory within the virtual machine with 'cd /vagrant/swiss-tournament'
+
+8. Define the database with 'psql -f tournament.sql'
+
+9. Run the tests with 'python tournament_test.py'
 
 #List of files
 --------------
